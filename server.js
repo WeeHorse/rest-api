@@ -4,6 +4,8 @@ import express from "express"
 import mysql from 'mysql2/promise';
 import session from "express-session"
 import crypto from "crypto"
+import acl from "./acl.js"
+
 
 // Krypterings funktion
 function hash(word) {
@@ -34,6 +36,9 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }))
+
+// access control list middleware
+app.use(acl)
 
 // En endpoint som hämtar data från product-tabellen i databasen - gå till http://localhost:3000/products
 app.get("/api/products", async (request, response) => {
@@ -105,7 +110,8 @@ app.post("/api/login", async (request, response) => {
         } else {
             request.session.user = {
                 id: result.id,
-                username: result.name
+                username: result.name,
+                role: result.role
             }
 
             return response.status(201).json({

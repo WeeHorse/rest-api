@@ -1,7 +1,7 @@
 [
   {
-    "route": "/api/products",
-    "roles": [
+    "url": "/api/products",
+    "accesses": [
       {
         "types": ["*"],
         "methods": ["GET"],
