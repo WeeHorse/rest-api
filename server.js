@@ -13,11 +13,11 @@ function hash(word) {
 
 // Databas konfiguration.
 const database = await mysql.createConnection({
-    host: "5.189.183.23",
-    user: "dsak24-12",
-    password: "ZGRUP75297",
-    port: 4567,
-    database: "dsak24-12"
+    host: "hostname",
+    user: "username",
+    password: "password",
+    port: 0,
+    database: "databasename"
 }) 
 
 // Skapar ett express-objekt.
