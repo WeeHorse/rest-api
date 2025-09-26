@@ -1,0 +1,17 @@
+[
+  {
+    "route": "/api/products",
+    "roles": [
+      {
+        "types": ["*"],
+        "methods": ["GET"],
+        "description": "Any type of user, incl anonymous, can access this route"
+      },
+      {
+        "types": ["admin", "superadmin"],
+        "methods": ["POST","PUT","DELETE"],
+        "description": "Restricted route for admins for creating, editing and deleting"
+      }
+    ]
+  }
+]

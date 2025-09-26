@@ -17,7 +17,7 @@ const database = await mysql.createConnection({
     user: "username",
     password: "password",
     port: 0,
-    database: "databasename"
+    database: "dbname"
 }) 
 
 // Skapar ett express-objekt.
@@ -146,8 +146,8 @@ app.post("/api/users", async (request, response) => {
     const {username, password} = request.body
 
     try {
-        const [result] = await database.execute("INSERT INTO users (name, password) VALUES (?, ?)",
-            [username, hash(password)])
+        const [result] = await database.execute("INSERT INTO users (name, password, role) VALUES (?, ?, ?)",
+            [username, hash(password), 'user'])
         
         console.log(result)
         return response.status(201).json(result)
