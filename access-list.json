@@ -1,14 +1,39 @@
 [
   {
+    "url": "/api/users",
+    "accesses": [
+      {
+        "roles": ["anonymous"],
+        "methods": ["POST"],
+        "description": "User registration"
+      }
+    ]
+  },
+  {
+    "url": "/api/login",
+    "accesses": [
+      {
+        "roles": ["anonymous"],
+        "methods": ["POST"],
+        "description": "User login"
+      },
+      {
+        "roles": ["user", "admin", "superadmin"],
+        "methods": ["DELETE", "GET"],
+        "description": "User logout and get user object"
+      }
+    ]
+  },
+  {
     "url": "/api/products",
     "accesses": [
       {
-        "types": ["*"],
+        "roles": ["*"],
         "methods": ["GET"],
         "description": "Any type of user, incl anonymous, can access this route"
       },
       {
-        "types": ["admin", "superadmin"],
+        "roles": ["admin", "superadmin"],
         "methods": ["POST","PUT","DELETE"],
         "description": "Restricted route for admins for creating, editing and deleting"
       }

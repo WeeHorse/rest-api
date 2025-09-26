@@ -11,20 +11,17 @@ export default function acl(request, response, next){
   const sessionRole = request.session?.user?.role
   if(sessionRole){
     userRoles.push(sessionRole)
+  }else{
+    userRoles.push("anonymous")
   }
-  //console.log('userRoles', userRoles)
 
   for(const route of accessList){
-    //console.log('route', route)
-    //console.log('current route', request.path) // NOT request.route.path DUH!
 
     if(route.url === request.path){
-      //console.log('route.url', route.url)
       for(const access of route.accesses){
         // matching the intersection between two arrays
-        if(userRoles.some(type => access.types.includes(type)) 
+        if(userRoles.some(userRole => access.roles.includes(userRole)) 
           && access.methods.includes(request.method)){
-          console.log('match')
           // call next now that we have access rights
           return next()
         }

@@ -5,21 +5,22 @@ import mysql from 'mysql2/promise';
 import session from "express-session"
 import crypto from "crypto"
 import acl from "./acl.js"
+import 'dotenv/config'
 
 
 // Krypterings funktion
 function hash(word) {
-    const salt = "mitt-salt"
+    const salt = process.env.HASH_SALT
     return crypto.pbkdf2Sync(word, salt, 1000, 64, `sha512`).toString(`hex`)
 }
 
 // Databas konfiguration.
 const database = await mysql.createConnection({
-    host: "hostname",
-    user: "username",
-    password: "password",
-    port: 0,
-    database: "dbname"
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
+    database: process.env.DB_DATABASE
 }) 
 
 // Skapar ett express-objekt.
@@ -43,7 +44,6 @@ app.use(acl)
 // En endpoint som hämtar data från product-tabellen i databasen - gå till http://localhost:3000/products
 app.get("/api/products", async (request, response) => {
     const [result] = await database.execute("SELECT * FROM products")
-    console.log(result)
     return response.json(result)
 })
 
@@ -55,18 +55,10 @@ app.post("/api/products", async (request, response) => {
         const [result] = await database.execute("INSERT INTO products (name, price) VALUES (?, ?)",
             [name, price])
         
-        console.log(result)
         return response.status(201).json(result)
     } catch (error) {
-        console.log(error)
         return response.status(409).json({message: "Server error."})
     }
-})
-
-// Kollar vår session
-app.get("/api/check-session", async (request, response) => {
-    console.log(request.session)
-    return response.status(200).json({message: "session is here!"})
 })
 
 // Kollar om någon är inloggad
@@ -98,8 +90,6 @@ app.post("/api/login", async (request, response) => {
         } catch (e){
             console.log(e)
         }
-
-        console.log("result: ", result)
 
         result = result[0]
 
@@ -146,16 +136,14 @@ app.delete("/api/login", async (request, response) => {
     return response.status(200)
 })
 
-// Lägg till en ny användare
+// Lägg till en ny användare (user registration)
 app.post("/api/users", async (request, response) => {
-    console.log("Trying to create user")
     const {username, password} = request.body
 
     try {
         const [result] = await database.execute("INSERT INTO users (name, password, role) VALUES (?, ?, ?)",
             [username, hash(password), 'user'])
         
-        console.log(result)
         return response.status(201).json(result)
     } catch (error) {
         console.log(error)
